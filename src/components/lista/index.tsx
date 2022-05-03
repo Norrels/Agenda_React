@@ -18,7 +18,7 @@ export function Lista({tarefas, selecionaTarefa}:Props) {
                     <Item 
                         selecionaTarefa={selecionaTarefa}    
                         key={item.id}
-                       {...item}
+                        {...item}
                     />
                 ))}
             </ul>

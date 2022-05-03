@@ -1,34 +1,47 @@
 import Botao from "../botao";
-import Relogio from "./Relogio";
+import { Relogio } from "./Relogio";
 import style from './Cronometro.module.scss'
-import { ITarefa } from '../../types/Tarefas'  
-import { tempoParaSegundos } from '../../common/utils/time'
-import { useEffect, useState} from 'react';
+import { ITarefa } from "../../types/Tarefas";
+import { useEffect, useState } from "react";
+import { tempoParaSegundos } from "../../common/utils/time";
 
-interface Props {selecionado: ITarefa| undefined}
+interface Props {
+    selecionado: ITarefa | undefined 
+    finalizarTarefa: () => void
+}
 
-export function Cronometro({selecionado}:Props){   
-    const[tempo, setTempo] = useState<number>()
+export function Cronometro({selecionado, finalizarTarefa}:Props){
 
-    useEffect(()=>
-            {if(selecionado?.tempo){setTempo(tempoParaSegundos(selecionado?.tempo))}})
+    const [tempo, setTempo] = useState(0)
 
-    function regressiva(contador: number = 0){
+    useEffect(() => {
+
+        setTempo(tempoParaSegundos(String(selecionado?.tempo || 0)))
+
+    }, [selecionado])
+
+    function regressiva(contador: number = 0) {
         setTimeout(() => {
-            if(contador> 0 ){
-                setTempo(contador-1)
-                return regressiva(contador-1)
+            if (contador > 0) {
+                setTempo(contador - 1)
+                return regressiva(contador - 1)
             }
+            finalizarTarefa()
         }, 1000)
+
     }
-     return(
+
+    return (
         <div className={style.cronometro}>
             <p className={style.titulo}> Escolha uma tarefa e inicie o Cronometro</p>
-            Tempo : {tempo}
+            
             <div className={style.relogioWrapper}>
-                <Relogio tempo={tempo}/>    
+                <Relogio
+                    tempo={tempo}
+                />
             </div>
-            <Botao onClick={( ) => regressiva(tempo)}>
+            <Botao
+                onClick={() => regressiva(tempo)}>
                 Iniciar!
             </Botao>
         </div>
